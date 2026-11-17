@@ -1,0 +1,32 @@
+<!-- Simulation: fake_camera + color_detector (+ detection_check, + viewer).
+     source ~/catkin_ws/src/color_vision/sim_env.sh && roslaunch color_vision color_detector_sim.launch
+     check:=true measures hit rate / centroid error for `duration` s and shuts everything down. -->
+<launch>
+  <arg name="image"     default=""/>      <!-- photo or folder to loop instead of the synthetic scene -->
+  <arg name="noise_std" default="0"/>
+  <arg name="rate"      default="15"/>
+  <arg name="colors"    default=""/>
+  <arg name="min_area"  default="300"/>
+  <arg name="check"     default="false"/>
+  <arg name="duration"  default="10"/>
+  <arg name="view"      default="false"/>
+
+  <node pkg="color_vision" type="fake_camera.py" name="fake_camera" output="screen" required="true">
+    <param name="image"     value="$(arg image)"/>
+    <param name="noise_std" value="$(arg noise_std)"/>
+    <param name="rate"      value="$(arg rate)"/>
+  </node>
+
+  <node pkg="color_vision" type="color_detector.py" name="color_detector" output="screen" required="true">
+    <param name="colors"   value="$(arg colors)"/>
+    <param name="min_area" value="$(arg min_area)"/>
+  </node>
+
+  <node if="$(arg check)" pkg="color_vision" type="detection_check.py" name="detection_check"
+        output="screen" required="true">
+    <param name="duration" value="$(arg duration)"/>
+  </node>
+
+  <node if="$(arg view)" pkg="rqt_image_view" type="rqt_image_view" name="detector_view"
+        args="/color_detector/debug_image/compressed"/>
+</launch>

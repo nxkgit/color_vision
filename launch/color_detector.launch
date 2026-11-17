@@ -1,0 +1,26 @@
+<!-- Real robot: color_detector only (the camera runs on the robot).
+     Robot side first: the camera driver publishing /usb_cam/image_raw/compressed
+     (see README "Real robot"). Run from a normal terminal (NOT sim_env.sh):
+       roslaunch color_vision color_detector.launch
+     Perception only: nothing here publishes /cmd_vel. -->
+<launch>
+  <arg name="image_topic" default="/usb_cam/image_raw/compressed"/>  <!-- VERIFY: rostopic list | grep -i image -->
+  <arg name="colors"      default=""/>      <!-- e.g. red,blue; empty = all in the file -->
+  <arg name="colors_file" default="$(find color_vision)/colors/colors.yaml"/>
+  <arg name="min_area"    default="300"/>
+  <arg name="hfov_deg"    default="60"/>    <!-- MEASURE: README "Field of view" -->
+  <arg name="show"        default="false"/> <!-- cv2 window on this machine -->
+  <arg name="view"        default="false"/> <!-- rqt_image_view on ~debug_image -->
+
+  <node pkg="color_vision" type="color_detector.py" name="color_detector" output="screen" required="true">
+    <param name="image_topic" value="$(arg image_topic)"/>
+    <param name="colors"      value="$(arg colors)"/>
+    <param name="colors_file" value="$(arg colors_file)"/>
+    <param name="min_area"    value="$(arg min_area)"/>
+    <param name="hfov_deg"    value="$(arg hfov_deg)"/>
+    <param name="show"        value="$(arg show)"/>
+  </node>
+
+  <node if="$(arg view)" pkg="rqt_image_view" type="rqt_image_view" name="detector_view"
+        args="/color_detector/debug_image/compressed"/>
+</launch>

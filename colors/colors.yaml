@@ -1,0 +1,19 @@
+# HSV ranges (OpenCV: H 0..179, S/V 0..255). Starting values only: tune them
+# under the lab lighting with `detect_images.py --sample X Y W H` (README).
+# lo H > hi H wraps through 0 (red). bgr is only the drawing color.
+red:
+  lo: [170, 120, 70]
+  hi: [8, 255, 255]
+  bgr: [40, 40, 230]
+yellow:
+  lo: [20, 110, 110]
+  hi: [34, 255, 255]
+  bgr: [30, 220, 230]
+green:
+  lo: [40, 80, 50]
+  hi: [85, 255, 255]
+  bgr: [60, 200, 60]
+blue:
+  lo: [96, 120, 50]
+  hi: [128, 255, 255]
+  bgr: [230, 120, 40]
